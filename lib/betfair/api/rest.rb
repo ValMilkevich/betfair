@@ -41,9 +41,9 @@ module Betfair
       #   password: Betfair account password string
       #   cert_key_file_path: Path to Betfair client certificate private key file
       #   cert_key_path: Path to Betfair client certificate public key file associated with Betfair account
-      def non_interactive_login(username, password, cert_key_file_path, cert_file_path)
+      def non_interactive_login(username, password, cert_key_file_path, cert_file_path, endpoint = nil)
         json = post({
-          url: "https://identitysso-cert.betfair.com/api/certlogin",
+          url: (endpoint || "https://identitysso-cert.betfair.com").to_s + "/api/certlogin",
           body: { username: username, password: password },
           headers: { "Content-Type"  => "application/x-www-form-urlencoded" },
           cert_key_file_path: cert_key_file_path,
@@ -53,8 +53,8 @@ module Betfair
         add_session_token_to_persistent_headers(json["sessionToken"])
       end
 
-      def logout
-        get(url: "https://identitysso.betfair.com/api/logout")
+      def logout(endpoint = nil)
+        get(url: (endpoint || "https://identitysso.betfair.com").to_s  + "/api/logout" )
       end
 
       private
